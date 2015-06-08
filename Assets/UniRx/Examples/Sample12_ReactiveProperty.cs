@@ -5,7 +5,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UniRx.Examples
+namespace UniRx.Unity.Examples
 {
     public class Sample12_ReactiveProperty : MonoBehaviour
     {

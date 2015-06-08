@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace UniRx.Examples
+namespace UniRx.Unity.Examples
 {
     public class Sample10_MainThreadDispatcher
     {
@@ -17,7 +17,7 @@ namespace UniRx.Examples
             // StartCoroutine is Unity primitive way and it's awaitable by yield return.
             // FromCoroutine is Rx, it's composable and cancellable by subscription's IDisposable.
             // FromCoroutine's overload can have return value, see:Sample05_ConvertFromCoroutine
-            Observable.FromCoroutine(TestAsync).Subscribe();
+            ObservableMainThreadDispatcher.FromCoroutine(TestAsync).Subscribe();
 
             // Add Action to MainThreadDispatcher. Action is saved queue, run on next update.
             MainThreadDispatcher.Post(() => Debug.Log("test"));

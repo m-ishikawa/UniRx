@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace UniRx
+namespace UniRx.Unity
 {
     // not yet obsolete
     // [Obsolete("ObservableMonoBehaviour is legacy component. use triggres instead")]
@@ -403,7 +403,7 @@ namespace UniRx
             return onLevelWasLoaded ?? (onLevelWasLoaded = new Subject<int>());
         }
 
-#if !(UNITY_IPHONE || UNITY_ANDROID)
+#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
 
         Subject<Unit> onMouseDown;
 

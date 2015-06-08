@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UniRx
+namespace UniRx.Unity
 {
     public interface IReadOnlyReactiveProperty<T> : IObservable<T>
     {
@@ -20,6 +20,9 @@ namespace UniRx
     [Serializable]
     public class ReactiveProperty<T> : IReactiveProperty<T>, IDisposable
     {
+        [NonSerialized]
+        bool canPublishValueOnSubscribe = false;
+
         [NonSerialized]
         bool isDisposed = false;
 
@@ -45,6 +48,7 @@ namespace UniRx
                     if (this.value != null)
                     {
                         SetValue(value);
+                        canPublishValueOnSubscribe = true;
 
                         if (isDisposed) return; // don't notify but set value 
                         if (publisher != null)
@@ -58,6 +62,7 @@ namespace UniRx
                     if (this.value == null || !this.value.Equals(value)) // don't use EqualityComparer<T>.Default
                     {
                         SetValue(value);
+                        canPublishValueOnSubscribe = true;
 
                         if (isDisposed) return;
                         if (publisher != null)
@@ -70,16 +75,24 @@ namespace UniRx
         }
 
         public ReactiveProperty()
+            : this(default(T))
         {
+            // default constructor 'can' publish value on subscribe.
+            // because sometimes value is deserialized from UnityEngine.
         }
 
         public ReactiveProperty(T initialValue)
         {
             value = initialValue;
+            canPublishValueOnSubscribe = true;
         }
 
         public ReactiveProperty(IObservable<T> source)
         {
+            // initialized from source's ReactiveProperty `doesn't` publish value on subscribe.
+            // because there ReactiveProeprty is `Future/Task/Promise`.
+
+            canPublishValueOnSubscribe = false;
             publisher = new Subject<T>();
             sourceConnection = source.Subscribe(x =>
             {
@@ -89,6 +102,7 @@ namespace UniRx
 
         public ReactiveProperty(IObservable<T> source, T initialValue)
         {
+            canPublishValueOnSubscribe = false;
             Value = initialValue;
             publisher = new Subject<T>();
             sourceConnection = source.Subscribe(x =>
@@ -128,11 +142,21 @@ namespace UniRx
             }
 
             var subscription = publisher.Subscribe(observer);
-            observer.OnNext(value); // raise latest value on subscribe
+            if (canPublishValueOnSubscribe)
+            {
+                observer.OnNext(value); // raise latest value on subscribe
+            }
             return subscription;
         }
 
+
         public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
         {
             if (!isDisposed)
             {
@@ -169,6 +193,8 @@ namespace UniRx
     /// </summary>
     public class ReadOnlyReactiveProperty<T> : IReadOnlyReactiveProperty<T>, IDisposable
     {
+        bool canPublishValueOnSubscribe = false;
+
         bool isDisposed = false;
 
         T value = default(T);
@@ -191,6 +217,7 @@ namespace UniRx
             sourceConnection = source.Subscribe(x =>
             {
                 value = x;
+                canPublishValueOnSubscribe = true;
                 publisher.OnNext(x);
             }, publisher.OnError, publisher.OnCompleted);
         }
@@ -202,6 +229,7 @@ namespace UniRx
             sourceConnection = source.Subscribe(x =>
             {
                 value = x;
+                canPublishValueOnSubscribe = true;
                 publisher.OnNext(x);
             }, publisher.OnError, publisher.OnCompleted);
         }
@@ -220,11 +248,20 @@ namespace UniRx
             }
 
             var subscription = publisher.Subscribe(observer);
-            observer.OnNext(value); // raise latest value on subscribe
+            if (canPublishValueOnSubscribe)
+            {
+                observer.OnNext(value); // raise latest value on subscribe
+            }
             return subscription;
         }
 
         public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
         {
             if (!isDisposed)
             {

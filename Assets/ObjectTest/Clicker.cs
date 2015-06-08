@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace UniRx.ObjectTest
+namespace UniRx.Unity.ObjectTest
 {
     public class Clicker : MonoBehaviour
     {
@@ -11,7 +11,7 @@ namespace UniRx.ObjectTest
 
         public event Action OnExited = delegate { };
 
-#if !UNITY_ANDROID
+#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
 
         // Disable OnMouse_ event handlers to make it easy to confirm warning.
 

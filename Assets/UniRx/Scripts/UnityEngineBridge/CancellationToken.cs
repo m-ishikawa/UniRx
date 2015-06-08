@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UniRx
+namespace UniRx.Unity
 {
     public class CancellationToken
     {

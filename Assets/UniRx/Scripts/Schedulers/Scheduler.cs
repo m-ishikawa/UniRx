@@ -6,16 +6,6 @@ using System.Threading;
 
 namespace UniRx
 {
-    public interface IScheduler
-    {
-        DateTimeOffset Now { get; }
-        
-        // interface is changed from official Rx for avoid iOS AOT problem(state is dangerous).
-
-        IDisposable Schedule(Action action);
-        IDisposable Schedule(TimeSpan dueTime, Action action);
-    }
-
     // Scheduler Extension
     public static partial class Scheduler
     {
@@ -66,7 +56,7 @@ namespace UniRx
             {
                 get
                 {
-                    return timeBasedOperations ?? (timeBasedOperations = Scheduler.MainThread); // MainThread as default for TimeBased Operation
+                    return timeBasedOperations ?? (timeBasedOperations = Scheduler.ThreadPool);
                 }
                 set
                 {
@@ -85,15 +75,6 @@ namespace UniRx
                 {
                     asyncConversions = value;
                 }
-            }
-
-            public static void SetDefaultForUnity()
-            {
-                ConstantTimeOperations = Scheduler.Immediate;
-                TailRecursion = Scheduler.Immediate;
-                Iteration = Scheduler.CurrentThread;
-                TimeBasedOperations = Scheduler.MainThread;
-                AsyncConversions = Scheduler.ThreadPool;
             }
 
             public static void SetDotNetCompatible()

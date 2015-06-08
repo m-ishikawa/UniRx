@@ -5,10 +5,19 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 
-namespace UniRx
+namespace UniRx.Unity
 {
-    public static partial class Scheduler
+    public static partial class SchedulerUnity
     {
+        public static void SetDefaultForUnity()
+        {
+            Scheduler.DefaultSchedulers.ConstantTimeOperations = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.TailRecursion = Scheduler.Immediate;
+            Scheduler.DefaultSchedulers.Iteration = Scheduler.CurrentThread;
+            Scheduler.DefaultSchedulers.TimeBasedOperations = MainThread;
+            Scheduler.DefaultSchedulers.AsyncConversions = Scheduler.ThreadPool;
+        }
+
         static IScheduler mainThread;
 
         /// <summary>
@@ -125,7 +134,7 @@ namespace UniRx
             public IDisposable Schedule(TimeSpan dueTime, Action action)
             {
                 var d = new BooleanDisposable();
-                var time = Normalize(dueTime);
+                var time = Scheduler.Normalize(dueTime);
 
                 MainThreadDispatcher.SendStartCoroutine(DelayAction(time, () =>
                 {
@@ -220,7 +229,7 @@ namespace UniRx
             public IDisposable Schedule(TimeSpan dueTime, Action action)
             {
                 var d = new BooleanDisposable();
-                var time = Normalize(dueTime);
+                var time = Scheduler.Normalize(dueTime);
 
                 MainThreadDispatcher.SendStartCoroutine(DelayAction(time, () =>
                 {

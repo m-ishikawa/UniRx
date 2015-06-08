@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace UniRx.Tests
+namespace UniRx.Unity.Tests
 {
     [TestClass]
     public class ReactriveDictionaryTest

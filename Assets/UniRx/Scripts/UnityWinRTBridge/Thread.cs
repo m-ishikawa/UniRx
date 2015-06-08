@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace UniRx
+namespace UniRx.Unity
 {
     public static class Thread
     {

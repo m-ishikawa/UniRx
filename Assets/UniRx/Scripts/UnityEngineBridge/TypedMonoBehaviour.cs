@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UniRx
+namespace UniRx.Unity
 {
     /// <summary>
     /// <para>Note: TypedMonoBehaviour and ObservableMonoBehaviour cause some performance issues.</para>
@@ -95,7 +95,7 @@ namespace UniRx
         /// <summary>This function is called after a new level was loaded.</summary>
         public virtual void OnLevelWasLoaded(int level) { }
 
-#if !(UNITY_IPHONE || UNITY_ANDROID)
+#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
 
         /// <summary>OnMouseDown is called when the user has pressed the mouse button while over the GUIElement or Collider.</summary>
         public virtual void OnMouseDown() { }

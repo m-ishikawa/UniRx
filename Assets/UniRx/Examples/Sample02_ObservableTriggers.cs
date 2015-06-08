@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
-using UniRx.Triggers; // Triggers Namepsace
+using UniRx.Unity.Triggers; // Triggers Namepsace
 using System;
 
-namespace UniRx.Examples
+namespace UniRx.Unity.Examples
 {
     public class Sample02_ObservableTriggers : MonoBehaviour
     {

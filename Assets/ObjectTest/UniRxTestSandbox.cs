@@ -7,8 +7,8 @@ using System.Threading;
 using System.Collections.Generic;
 using System;
 using System.Text;
-using UniRx.Triggers;
-using UniRx.Diagnostics;
+using UniRx.Unity.Triggers;
+using UniRx.Unity.Diagnostics;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Net;
@@ -23,7 +23,7 @@ using HashEntry = System.Collections.Generic.KeyValuePair<string, string>;
 using UniRx.InternalUtil;
 #endif
 
-namespace UniRx.ObjectTest
+namespace UniRx.Unity.ObjectTest
 {
     public enum Mikan
     {
@@ -36,6 +36,11 @@ namespace UniRx.ObjectTest
         public string Condition;
         public string StackTrace;
         public UnityEngine.LogType LogType;
+
+        public override string ToString()
+        {
+            return Condition + " " + StackTrace;
+        }
     }
 
     static class LogHelper
@@ -109,7 +114,7 @@ namespace UniRx.ObjectTest
         }
 
         public FruitReactiveProperty(Fruit initialValue)
-            :base(initialValue)
+            : base(initialValue)
         {
 
         }
@@ -182,7 +187,7 @@ namespace UniRx.ObjectTest
     {
         readonly static Logger logger = new Logger("UniRx.Test.NewBehaviour");
 
-        public UnityEvent<int> SimpleEvent;
+        // public UnityEvent<int> SimpleEvent;
 
         public Vector2ReactiveProperty V2R;
 
@@ -222,7 +227,7 @@ namespace UniRx.ObjectTest
         public ColorReactiveProperty DDD;
         public RectReactiveProperty EEE;
 
-        public Slider MySlider;
+        // public Slider MySlider;
 
         public MySuperStructReactiveProperty SUPER_Rx;
 
@@ -256,8 +261,8 @@ namespace UniRx.ObjectTest
                 logtext.AppendLine(x.Message);
             });
 
+            // Intxxx.Subscribe(x => Debug.Log(x));
 
-            Intxxx.Subscribe(x => Debug.Log(x));
             LongxXXX.Subscribe(x => Debug.Log(x));
             DuAAX.Subscribe(x => Debug.Log(x));
             FloAAX.Subscribe(x => Debug.Log(x));
@@ -334,6 +339,8 @@ namespace UniRx.ObjectTest
         Subject<Unit> throttleSubject = new Subject<Unit>();
         Func<bool> isNull = null;
 
+        ReactiveProperty<int> fromNeverRxProp = null;
+
         public Func<bool> IsNull<T>(T source)
         {
             return () => source == null;
@@ -355,12 +362,19 @@ namespace UniRx.ObjectTest
                 disposables.Clear();
             }
 
-            if (GUILayout.Button("DelayFrame"))
+            if (GUILayout.Button("RxProp1"))
             {
-                logtext.AppendLine("StartFrame:" + Time.frameCount);
-                Observable.Return(100)
-                    .DelayFrame(3)
-                    .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + ":" + Time.frameCount));
+                Intxxx.Subscribe(x => Debug.Log(x));
+            }
+
+            if (GUILayout.Button("RxProp2"))
+            {
+                fromNeverRxProp = Observable.Never<int>().ToReactiveProperty();
+                fromNeverRxProp.Subscribe(x => Debug.Log(x));
+            }
+
+            if (GUILayout.Button("RxProp2Push"))
+            {
             }
 
             if (GUILayout.Button("DelayFrameEmpty"))
@@ -374,7 +388,7 @@ namespace UniRx.ObjectTest
             if (GUILayout.Button("NextFrame"))
             {
                 logtext.AppendLine("StartFrame:" + Time.frameCount);
-                Observable.NextFrame()
+                ObservableMainThreadDispatcher.NextFrame()
                     .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + Time.frameCount))
                     .AddTo(disposables);
             }
@@ -382,7 +396,7 @@ namespace UniRx.ObjectTest
             if (GUILayout.Button("IntervalFrame"))
             {
                 logtext.AppendLine("StartFrame:" + Time.frameCount);
-                Observable.IntervalFrame(3)
+                ObservableMainThreadDispatcher.IntervalFrame(3)
                     .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + Time.frameCount))
                     .AddTo(disposables);
             }
@@ -390,7 +404,7 @@ namespace UniRx.ObjectTest
             if (GUILayout.Button("TimerFrame1"))
             {
                 logtext.AppendLine("StartFrame:" + Time.frameCount);
-                Observable.TimerFrame(3)
+                ObservableMainThreadDispatcher.TimerFrame(3)
                     .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + Time.frameCount))
                     .AddTo(disposables);
             }
@@ -398,7 +412,7 @@ namespace UniRx.ObjectTest
             if (GUILayout.Button("TimerFrame2"))
             {
                 logtext.AppendLine("StartFrame:" + Time.frameCount);
-                Observable.TimerFrame(5, 3)
+                ObservableMainThreadDispatcher.TimerFrame(5, 3)
                     .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + Time.frameCount))
                     .AddTo(disposables);
             }
@@ -407,7 +421,7 @@ namespace UniRx.ObjectTest
             {
                 logtext.AppendLine("StartFrame:" + Time.frameCount);
                 Time.timeScale = 0f;
-                Scheduler.MainThreadIgnoreTimeScale.Schedule(TimeSpan.FromSeconds(3), () =>
+                SchedulerUnity.MainThreadIgnoreTimeScale.Schedule(TimeSpan.FromSeconds(3), () =>
                 {
                     logtext.AppendLine(Time.frameCount.ToString());
                 });
@@ -416,7 +430,7 @@ namespace UniRx.ObjectTest
             if (GUILayout.Button("SampleFrame"))
             {
                 logtext.AppendLine("SampleFrame:" + Time.frameCount);
-                Observable.IntervalFrame(10)
+                ObservableMainThreadDispatcher.IntervalFrame(10)
                     .SampleFrame(25)
                     .Take(6)
                     .Subscribe(x =>
@@ -443,6 +457,21 @@ namespace UniRx.ObjectTest
                     .Subscribe(x =>
                     {
                         logtext.AppendLine("Throttle:" + Time.frameCount.ToString());
+                    }, () =>
+                    {
+                        logtext.AppendLine("Complete:" + Time.frameCount.ToString());
+                    })
+                    .AddTo(disposables);
+            }
+
+            if (GUILayout.Button("ThrottleFirstFrame"))
+            {
+                logtext.AppendLine("ThrottleFirstFrame:" + Time.frameCount);
+                throttleSubject
+                    .ThrottleFirstFrame(60)
+                    .Subscribe(x =>
+                    {
+                        logtext.AppendLine("ThrottleFirst:" + Time.frameCount.ToString());
                     }, () =>
                     {
                         logtext.AppendLine("Complete:" + Time.frameCount.ToString());
@@ -501,7 +530,7 @@ namespace UniRx.ObjectTest
 
             if (GUILayout.Button("Cancel"))
             {
-                var dispose = Scheduler.MainThread.Schedule(TimeSpan.FromSeconds(3), () =>
+                var dispose = SchedulerUnity.MainThread.Schedule(TimeSpan.FromSeconds(3), () =>
                 {
                     Debug.Log("MainThreadSchedule");
                 });
@@ -516,44 +545,44 @@ namespace UniRx.ObjectTest
                 Debug.Log("after");
             }
 
-            if (GUILayout.Button("DestroyCube"))
-            {
-                GameObject.Destroy(cube);
-            }
+            //if (GUILayout.Button("DestroyCube"))
+            //{
+            //    GameObject.Destroy(cube);
+            //}
 
-            if (GUILayout.Button("NextScene"))
-            {
-                Application.LoadLevel("NextSandbox");
-            }
+            //if (GUILayout.Button("NextScene"))
+            //{
+            //    Application.LoadLevel("NextSandbox");
+            //}
 
-            if (GUILayout.Button("Create POCO"))
-            {
-                iremono = new Tadanoiremono();
-            }
+            //if (GUILayout.Button("Create POCO"))
+            //{
+            //    iremono = new Tadanoiremono();
+            //}
 
-            if (GUILayout.Button("Observe POCO"))
-            {
-                iremono.ObserveEveryValueChanged(x => x.Hoge)
-                    .Subscribe(x => Debug.Log(x), Debug.LogException, () => Debug.Log("comp"))
-                    .AddTo(disposables);
-            }
+            //if (GUILayout.Button("Observe POCO"))
+            //{
+            //    iremono.ObserveEveryValueChanged(x => x.Hoge)
+            //        .Subscribe(x => Debug.Log(x), Debug.LogException, () => Debug.Log("comp"))
+            //        .AddTo(disposables);
+            //}
 
-            if (GUILayout.Button("Add POCO"))
-            {
-                iremono.Hoge += 100;
-            }
+            //if (GUILayout.Button("Add POCO"))
+            //{
+            //    iremono.Hoge += 100;
+            //}
 
-            if (GUILayout.Button("POCO Null"))
-            {
-                iremono = null;
-            }
+            //if (GUILayout.Button("POCO Null"))
+            //{
+            //    iremono = null;
+            //}
 
-            if (GUILayout.Button("GC"))
-            {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-            }
+            //if (GUILayout.Button("GC"))
+            //{
+            //    GC.Collect();
+            //    GC.WaitForPendingFinalizers();
+            //    GC.Collect();
+            //}
 
             if (GUILayout.Button("Trigger"))
             {
@@ -602,13 +631,20 @@ namespace UniRx.ObjectTest
                     });
             }
 
+            if (GUILayout.Button("ThreadPoolScheduler"))
+            {
+                Observable.Start(() => 100)
+                    .ObserveOnMainThread()
+                    .Subscribe(_ => logtext.AppendLine("ThreadPool!"), ex => logtext.AppendLine(ex.ToString()));
+            }
+
             GUILayout.BeginArea(new Rect(200, 0, 100, 200));
             {
                 if (GUILayout.Button("Simple FromEvent"))
                 {
                     try
                     {
-                        MySlider.OnValueChangedAsObservable().Subscribe(x => logger.Debug(x), ex => logger.Exception(ex));
+                        // MySlider.OnValueChangedAsObservable().Subscribe(x => logger.Debug(x), ex => logger.Exception(ex));
 
                     }
                     //Observable.FromEvent<UnityEvent>(h => h.Invoke, 

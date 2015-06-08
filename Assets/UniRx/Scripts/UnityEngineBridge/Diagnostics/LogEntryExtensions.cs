@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace UniRx.Diagnostics
+namespace UniRx.Unity.Diagnostics
 {
     public static partial class LogEntryExtensions
     {

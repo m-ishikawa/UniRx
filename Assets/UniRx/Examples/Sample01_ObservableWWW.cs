@@ -1,8 +1,9 @@
 ﻿#if !(UNITY_METRO || UNITY_WP8)
 
 using UnityEngine;
+using UniRx;
 
-namespace UniRx.Examples
+namespace UniRx.Unity.Examples
 {
     // sample script, attach your object.
     public class Sample01_ObservableWWW : MonoBehaviour

@@ -4,7 +4,7 @@
 using System;
 using UnityEngine;
 
-namespace UniRx.Triggers
+namespace UniRx.Unity.Triggers
 {
     [DisallowMultipleComponent]
     public class ObservableCanvasGroupChangedTrigger : ObservableTriggerBase

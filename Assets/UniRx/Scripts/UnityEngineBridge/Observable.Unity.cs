@@ -1,11 +1,11 @@
 ﻿using System;
-using UniRx.Triggers;
+using UniRx.Unity.Triggers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace UniRx
+namespace UniRx.Unity
 {
     public enum FrameCountType
     {
@@ -30,8 +30,8 @@ namespace UniRx
             }
         }
     }
-
-    public static partial class Observable
+    
+    public static partial class ObservableMainThreadDispatcher
     {
         readonly static HashSet<Type> YieldInstructionTypes = new HashSet<Type>
         {
@@ -118,7 +118,7 @@ namespace UniRx
         /// <summary>Convert coroutine to typed IObservable. If nullAsNextUpdate = true then yield return null when Enumerator.Current and no null publish observer.OnNext.</summary>
         public static IObservable<T> FromCoroutineValue<T>(Func<IEnumerator> coroutine, bool nullAsNextUpdate = true)
         {
-            return Observable.FromCoroutine<T>((observer, cancellationToken) => WrapEnumeratorYieldValue<T>(coroutine(), observer, cancellationToken, nullAsNextUpdate));
+            return ObservableMainThreadDispatcher.FromCoroutine<T>((observer, cancellationToken) => WrapEnumeratorYieldValue<T>(coroutine(), observer, cancellationToken, nullAsNextUpdate));
         }
 
         static IEnumerator WrapEnumeratorYieldValue<T>(IEnumerator enumerator, IObserver<T> observer, CancellationToken cancellationToken, bool nullAsNextUpdate)
@@ -216,12 +216,12 @@ namespace UniRx
 
         public static IObservable<Unit> SelectMany<T>(this IObservable<T> source, IEnumerator coroutine, bool publishEveryYield = false)
         {
-            return source.SelectMany(Observable.FromCoroutine(() => coroutine, publishEveryYield));
+            return source.SelectMany(ObservableMainThreadDispatcher.FromCoroutine(() => coroutine, publishEveryYield));
         }
 
         public static IObservable<Unit> SelectMany<T>(this IObservable<T> source, Func<IEnumerator> selector, bool publishEveryYield = false)
         {
-            return source.SelectMany(Observable.FromCoroutine(() => selector(), publishEveryYield));
+            return source.SelectMany(ObservableMainThreadDispatcher.FromCoroutine(() => selector(), publishEveryYield));
         }
 
         /// <summary>
@@ -229,7 +229,7 @@ namespace UniRx
         /// </summary>
         public static IObservable<Unit> SelectMany<T>(this IObservable<T> source, Func<T, IEnumerator> selector)
         {
-            return source.SelectMany(x => Observable.FromCoroutine(() => selector(x), false));
+            return source.SelectMany(x => ObservableMainThreadDispatcher.FromCoroutine(() => selector(x), false));
         }
 
         public static IObservable<Unit> ToObservable(this IEnumerator coroutine, bool publishEveryYield = false)
@@ -246,11 +246,14 @@ namespace UniRx
 
         static IEnumerator EveryUpdateCore(IObserver<long> observer, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) yield break;
             var count = 0L;
-            while (!cancellationToken.IsCancellationRequested)
+            while (true)
             {
-                observer.OnNext(count++);
                 yield return null;
+                if (cancellationToken.IsCancellationRequested) yield break;
+
+                observer.OnNext(count++);
             }
         }
 
@@ -263,11 +266,13 @@ namespace UniRx
         {
             if (cancellationToken.IsCancellationRequested) yield break;
             var count = 0L;
-            do
+            while(true)
             {
                 yield return new UnityEngine.WaitForFixedUpdate();
+                if (cancellationToken.IsCancellationRequested) yield break;
+
                 observer.OnNext(count++);
-            } while (!cancellationToken.IsCancellationRequested);
+            }
         }
 
         public static IObservable<long> EveryEndOfFrame()
@@ -279,11 +284,13 @@ namespace UniRx
         {
             if (cancellationToken.IsCancellationRequested) yield break;
             var count = 0L;
-            do
+            while(true)
             {
                 yield return new UnityEngine.WaitForFixedUpdate();
+                if (cancellationToken.IsCancellationRequested) yield break;
+
                 observer.OnNext(count++);
-            } while (!cancellationToken.IsCancellationRequested);
+            }
         }
 
         #region Observable.Time Frame Extensions
@@ -292,7 +299,7 @@ namespace UniRx
 
         public static IObservable<Unit> NextFrame(FrameCountType frameCountType = FrameCountType.Update)
         {
-            return Observable.FromCoroutine<Unit>((observer, cancellation) => NextFrameCore(observer, frameCountType, cancellation));
+            return ObservableMainThreadDispatcher.FromCoroutine<Unit>((observer, cancellation) => NextFrameCore(observer, frameCountType, cancellation));
         }
 
         static IEnumerator NextFrameCore(IObserver<Unit> observer, FrameCountType frameCountType, CancellationToken cancellation)
@@ -313,12 +320,12 @@ namespace UniRx
 
         public static IObservable<long> TimerFrame(int dueTimeFrameCount, FrameCountType frameCountType = FrameCountType.Update)
         {
-            return Observable.FromCoroutine<long>((observer, cancellation) => TimerFrameCore(observer, dueTimeFrameCount, frameCountType, cancellation));
+            return ObservableMainThreadDispatcher.FromCoroutine<long>((observer, cancellation) => TimerFrameCore(observer, dueTimeFrameCount, frameCountType, cancellation));
         }
 
         public static IObservable<long> TimerFrame(int dueTimeFrameCount, int periodFrameCount, FrameCountType frameCountType = FrameCountType.Update)
         {
-            return Observable.FromCoroutine<long>((observer, cancellation) => TimerFrameCore(observer, dueTimeFrameCount, periodFrameCount, frameCountType, cancellation));
+            return ObservableMainThreadDispatcher.FromCoroutine<long>((observer, cancellation) => TimerFrameCore(observer, dueTimeFrameCount, periodFrameCount, frameCountType, cancellation));
         }
 
         static IEnumerator TimerFrameCore(IObserver<long> observer, int dueTimeFrameCount, FrameCountType frameCountType, CancellationToken cancel)
@@ -420,7 +427,7 @@ namespace UniRx
                 var gate = new object();
 
                 var scheduling = new SingleAssignmentDisposable();
-                scheduling.Disposable = Observable.IntervalFrame(frameCount, frameCountType)
+                scheduling.Disposable = ObservableMainThreadDispatcher.IntervalFrame(frameCount, frameCountType)
                     .Subscribe(_ =>
                     {
                         lock (gate)
@@ -478,6 +485,7 @@ namespace UniRx
         public static IObservable<TSource> ThrottleFrame<TSource>(this IObservable<TSource> source, int frameCount, FrameCountType frameCountType = FrameCountType.Update)
         {
             return new AnonymousObservable<TSource>(observer =>
+
             {
                 var gate = new object();
                 var value = default(TSource);
@@ -497,7 +505,7 @@ namespace UniRx
                         }
                         var d = new SingleAssignmentDisposable();
                         cancelable.Disposable = d;
-                        d.Disposable = Observable.TimerFrame(frameCount, frameCountType)
+                        d.Disposable = ObservableMainThreadDispatcher.TimerFrame(frameCount, frameCountType)
                             .Subscribe(_ =>
                             {
                                 lock (gate)
@@ -536,6 +544,60 @@ namespace UniRx
                 return new CompositeDisposable(subscription, cancelable);
             });
         }
+        
+        public static IObservable<TSource> ThrottleFirstFrame<TSource>(this IObservable<TSource> source, int frameCount,
+            FrameCountType frameCountType = FrameCountType.Update)
+        {
+            return new AnonymousObservable<TSource>(observer =>
+            {
+                var gate = new object();
+                var open = true;
+                var cancelable = new SerialDisposable();
+
+                var subscription = source.Subscribe(x =>
+                {
+                    lock (gate)
+                    {
+                        if (!open) return;
+                        observer.OnNext(x);
+                        open = false;
+                    }
+
+                    var d = new SingleAssignmentDisposable();
+                    cancelable.Disposable = d;
+
+                    d.Disposable = ObservableMainThreadDispatcher.TimerFrame(frameCount, frameCountType)
+                        .Subscribe(_ =>
+                        {
+                            lock (gate)
+                            {
+                                open = true;
+                            }
+                        });
+                },
+                    exception =>
+                    {
+                        cancelable.Dispose();
+
+                        lock (gate)
+                        {
+                            observer.OnError(exception);
+                        }
+                    },
+                    () =>
+                    {
+                        cancelable.Dispose();
+
+                        lock (gate)
+                        {
+                            observer.OnCompleted();
+
+                        }
+                    });
+
+                return new CompositeDisposable(subscription, cancelable);
+            });
+        }
 
         public static IObservable<T> TimeoutFrame<T>(this IObservable<T> source, int frameCount, FrameCountType frameCountType = FrameCountType.Update)
         {
@@ -547,7 +609,7 @@ namespace UniRx
 
                 Func<ulong, IDisposable> runTimer = (timerId) =>
                 {
-                    return Observable.TimerFrame(frameCount, frameCountType)
+                    return ObservableMainThreadDispatcher.TimerFrame(frameCount, frameCountType)
                         .Subscribe(_ =>
                         {
                             lock (gate)
@@ -616,7 +678,7 @@ namespace UniRx
             return Observable.Create<T>(observer =>
             {
                 var d = new MultipleAssignmentDisposable();
-                d.Disposable = Observable.TimerFrame(frameCount, frameCountType)
+                d.Disposable = ObservableMainThreadDispatcher.TimerFrame(frameCount, frameCountType)
                     .Subscribe(_ =>
                     {
                         d.Disposable = source.Subscribe(observer);
@@ -696,12 +758,12 @@ namespace UniRx
 
         public static IObservable<T> ObserveOnMainThread<T>(this IObservable<T> source)
         {
-            return source.ObserveOn(Scheduler.MainThread);
+            return source.ObserveOn(SchedulerUnity.MainThread);
         }
 
         public static IObservable<T> SubscribeOnMainThread<T>(this IObservable<T> source)
         {
-            return source.SubscribeOn(Scheduler.MainThread);
+            return source.SubscribeOn(SchedulerUnity.MainThread);
         }
 
         public static IObservable<bool> EveryApplicationPause()
@@ -865,6 +927,59 @@ namespace UniRx
             {
                 d.Disposable = source.Subscribe(observer);
             }
+        }
+
+        class AnonymousObservable<T> : IObservable<T>
+        {
+            readonly Func<IObserver<T>, IDisposable> subscribe;
+
+            public AnonymousObservable(Func<IObserver<T>, IDisposable> subscribe)
+            {
+                this.subscribe = subscribe;
+            }
+
+            public IDisposable Subscribe(IObserver<T> observer)
+            {
+                var subscription = new SingleAssignmentDisposable();
+
+                var safeObserver = Observer.Create<T>(observer.OnNext, observer.OnError, observer.OnCompleted, subscription);
+
+                if (Scheduler.IsCurrentThreadSchedulerScheduleRequired)
+                {
+                    Scheduler.CurrentThread.Schedule(() => subscription.Disposable = subscribe(safeObserver));
+                }
+                else
+                {
+                    subscription.Disposable = subscribe(safeObserver);
+                }
+
+                return subscription;
+            }
+        }
+
+        static IEnumerable<IObservable<T>> RepeatInfinite<T>(IObservable<T> source)
+        {
+            while (true)
+            {
+                yield return source;
+            }
+        }
+    }
+
+    internal static class Stubs
+    {
+        public static readonly Action Nop = () => { };
+        public static readonly Action<Exception> Throw = ex => { throw ex; };
+
+        // Stubs<T>.Ignore can't avoid iOS AOT problem.
+        public static void Ignore<T>(T t)
+        {
+        }
+
+        // marker for CatchIgnore and Catch avoid iOS AOT problem.
+        public static IObservable<TSource> CatchIgnore<TSource>(Exception ex)
+        {
+            return Observable.Empty<TSource>();
         }
     }
 }
