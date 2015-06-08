@@ -56,7 +56,7 @@ namespace UniRx
             {
                 get
                 {
-                    return timeBasedOperations ?? (timeBasedOperations = Scheduler.MainThread); // MainThread as default for TimeBased Operation
+                    return timeBasedOperations ?? (timeBasedOperations = Scheduler.ThreadPool);
                 }
                 set
                 {
@@ -75,15 +75,6 @@ namespace UniRx
                 {
                     asyncConversions = value;
                 }
-            }
-
-            public static void SetDefaultForUnity()
-            {
-                ConstantTimeOperations = Scheduler.Immediate;
-                TailRecursion = Scheduler.Immediate;
-                Iteration = Scheduler.CurrentThread;
-                TimeBasedOperations = Scheduler.MainThread;
-                AsyncConversions = Scheduler.ThreadPool;
             }
 
             public static void SetDotNetCompatible()

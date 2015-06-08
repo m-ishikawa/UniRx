@@ -19,13 +19,13 @@ namespace UniRx
 
             if (isUnityObject)
             {
-                return Observable.FromCoroutine<TProperty>((observer, cancellationToken) => PublishUnityObjectValueChanged(unityObject, propertySelector, frameCountType, observer, cancellationToken));
+                return ObservableMainThreadDispatcher.FromCoroutine<TProperty>((observer, cancellationToken) => PublishUnityObjectValueChanged(unityObject, propertySelector, frameCountType, observer, cancellationToken));
             }
             else
             {
                 var reference = new WeakReference(source);
                 source = null;
-                return Observable.FromCoroutine<TProperty>((observer, cancellationToken) => PublishPocoValueChanged(reference, propertySelector, frameCountType, observer, cancellationToken));
+                return ObservableMainThreadDispatcher.FromCoroutine<TProperty>((observer, cancellationToken) => PublishPocoValueChanged(reference, propertySelector, frameCountType, observer, cancellationToken));
             }
         }
 
