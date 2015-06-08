@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace UniRx.Unity.ObjectTest
+namespace UniRx.ObjectTest
 {
     public class LoadLevelTest : MonoBehaviour
     {

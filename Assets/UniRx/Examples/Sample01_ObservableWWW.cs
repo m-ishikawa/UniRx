@@ -3,7 +3,7 @@
 using UnityEngine;
 using UniRx;
 
-namespace UniRx.Unity.Examples
+namespace UniRx.Examples
 {
     // sample script, attach your object.
     public class Sample01_ObservableWWW : MonoBehaviour

@@ -1,6 +1,10 @@
 ﻿using System;
 
+#if UniRxLibrary
 namespace UniRx.Unity
+#else
+namespace UniRx
+#endif
 {
     public class CancellationToken
     {

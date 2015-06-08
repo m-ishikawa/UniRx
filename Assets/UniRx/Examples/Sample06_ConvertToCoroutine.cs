@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace UniRx.Unity.Examples
+namespace UniRx.Examples
 {
     public class Sample06_ConvertToCoroutine : MonoBehaviour
     {

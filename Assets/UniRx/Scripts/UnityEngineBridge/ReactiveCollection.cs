@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+#if UniRxLibrary
 namespace UniRx.Unity
+#else
+namespace UniRx
+#endif
 {
     public class CollectionAddEvent<T>
     {

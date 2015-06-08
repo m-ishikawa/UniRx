@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-using UniRx.Unity.Diagnostics;
+using UniRx.Diagnostics;
 using UnityEngine;
 
 namespace UniRx.Examples

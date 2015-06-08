@@ -1,7 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
+#if UniRxLibrary
 namespace UniRx.Unity
+#else
+namespace UniRx
+#endif
 {
     /// <summary>
     /// <para>Inspectable ReactiveProperty.</para>

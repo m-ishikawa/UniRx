@@ -5,7 +5,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 #endif
 
+#if UniRxLibrary
 namespace UniRx.Unity.Triggers
+#else
+namespace UniRx.Triggers
+#endif
 {
     // for Component
     public static partial class ObservableTriggerExtensions

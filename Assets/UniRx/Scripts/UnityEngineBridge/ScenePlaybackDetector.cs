@@ -4,7 +4,11 @@ using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
 
+#if UniRxLibrary
 namespace UniRx.Unity
+#else
+namespace UniRx
+#endif
 {
     [InitializeOnLoad]
     public class ScenePlaybackDetector

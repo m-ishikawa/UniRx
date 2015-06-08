@@ -3,7 +3,7 @@ using System.Threading;
 using UniRx;
 using UnityEngine;
 
-namespace UniRx.Unity.ObjectTest
+namespace UniRx.ObjectTest
 {
     public class WorkerThreadTest : MonoBehaviour
     {

@@ -5,9 +5,15 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 
+#if UniRxLibrary
 namespace UniRx.Unity
 {
     public static partial class SchedulerUnity
+#else
+namespace UniRx
+{
+    public static partial class Scheduler
+#endif
     {
         public static void SetDefaultForUnity()
         {

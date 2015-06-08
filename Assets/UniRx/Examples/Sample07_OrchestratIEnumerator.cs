@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace UniRx.Unity.Examples
+namespace UniRx.Examples
 {
     public class Sample07_OrchestratIEnumerator : MonoBehaviour
     {
@@ -30,7 +30,7 @@ namespace UniRx.Unity.Examples
         {
             // after completed AsyncA, run AsyncB as continuous routine.
             // UniRx expands SelectMany(IEnumerator) as SelectMany(IEnumerator.ToObservable())
-            var cancel = ObservableMainThreadDispatcher.FromCoroutine(AsyncA)
+            var cancel = Observable.FromCoroutine(AsyncA)
                 .SelectMany(AsyncB)
                 .Subscribe();
 

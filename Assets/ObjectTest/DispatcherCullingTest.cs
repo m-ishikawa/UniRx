@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace UniRx.Unity.ObjectTest
+namespace UniRx.ObjectTest
 {
     public class DispatcherCullingTest : MonoBehaviour
     {

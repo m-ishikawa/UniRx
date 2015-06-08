@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 
+#if UniRxLibrary
 namespace UniRx.Unity
+#else
+namespace UniRx
+#endif
 {
     /// <summary>
     /// <para>Note: TypedMonoBehaviour and ObservableMonoBehaviour cause some performance issues.</para>
