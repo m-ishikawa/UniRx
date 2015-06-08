@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace UniRx
+namespace UniRx.Unity
 {
     public class CollectionAddEvent<T>
     {

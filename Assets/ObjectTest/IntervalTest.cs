@@ -2,7 +2,7 @@ using System;
 using UniRx;
 using UnityEngine;
 
-namespace UniRx.ObjectTest
+namespace UniRx.Unity.ObjectTest
 {
     public class IntervalTest : MonoBehaviour
     {

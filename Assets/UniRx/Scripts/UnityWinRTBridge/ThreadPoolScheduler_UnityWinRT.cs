@@ -11,7 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 #endif
 
-namespace UniRx
+namespace UniRx.Unity
 {
     public static partial class Scheduler
     {

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace UniRx
+namespace UniRx.Unity
 {
     [System.AttributeUsage(System.AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
     public class InspectorDisplayAttribute : PropertyAttribute

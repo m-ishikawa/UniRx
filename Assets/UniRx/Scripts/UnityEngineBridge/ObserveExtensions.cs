@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace UniRx
+namespace UniRx.Unity
 {
     public static partial class ObserveExtensions
     {

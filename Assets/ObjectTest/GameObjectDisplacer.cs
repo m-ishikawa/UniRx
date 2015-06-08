@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace UniRx.ObjectTest
+namespace UniRx.Unity.ObjectTest
 {
     public class GameObjectDisplacer : MonoBehaviour
     {

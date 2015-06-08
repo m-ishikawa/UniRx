@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq; // in future, should remove LINQ
 using UnityEngine;
 
-namespace UniRx
+namespace UniRx.Unity
 {
     public abstract class LazyTask
     {

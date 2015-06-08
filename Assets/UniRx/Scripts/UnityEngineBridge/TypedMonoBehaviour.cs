@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UniRx
+namespace UniRx.Unity
 {
     /// <summary>
     /// <para>Note: TypedMonoBehaviour and ObservableMonoBehaviour cause some performance issues.</para>

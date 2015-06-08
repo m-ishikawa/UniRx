@@ -6,7 +6,7 @@ using System.Threading;
 using UniRx.InternalUtil;
 using UnityEngine;
 
-namespace UniRx
+namespace UniRx.Unity
 {
     public sealed class MainThreadDispatcher : MonoBehaviour
     {

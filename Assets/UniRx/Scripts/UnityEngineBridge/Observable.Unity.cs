@@ -1,11 +1,11 @@
 ﻿using System;
-using UniRx.Triggers;
+using UniRx.Unity.Triggers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace UniRx
+namespace UniRx.Unity
 {
     public enum FrameCountType
     {

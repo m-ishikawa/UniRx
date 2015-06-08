@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UniRx;
-using UniRx.Triggers;
+using UniRx.Unity;
+using UniRx.Unity.Triggers;
 using System.Collections;
 using System.Linq;
 using System;

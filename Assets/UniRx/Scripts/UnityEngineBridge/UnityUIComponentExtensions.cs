@@ -5,7 +5,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UniRx
+namespace UniRx.Unity
 {
     public static partial class UnityUIComponentExtensions
     {

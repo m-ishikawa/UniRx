@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace UniRx
+namespace UniRx.Unity
 {
     public static partial class AsyncOperationExtensions
     {

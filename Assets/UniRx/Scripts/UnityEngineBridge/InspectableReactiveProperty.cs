@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace UniRx
+namespace UniRx.Unity
 {
     /// <summary>
     /// <para>Inspectable ReactiveProperty.</para>

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace UniRx
+namespace UniRx.Unity
 {
     public class DictionaryAddEvent<TKey, TValue>
     {

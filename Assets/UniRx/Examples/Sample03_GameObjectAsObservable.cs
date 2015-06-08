@@ -1,9 +1,10 @@
 ﻿#if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
 
 using UnityEngine;
-using UniRx.Triggers; // for enable gameObject.EventAsObservbale()
+using UniRx;
+using UniRx.Unity.Triggers; // for enable gameObject.EventAsObservbale()
 
-namespace UniRx.Examples
+namespace UniRx.Unity.Examples
 {
     public class Sample03_GameObjectAsObservable : MonoBehaviour
     {

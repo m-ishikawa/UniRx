@@ -7,8 +7,10 @@ using System.Threading;
 using System.Collections.Generic;
 using System;
 using System.Text;
-using UniRx.Triggers;
-using UniRx.Diagnostics;
+using UniRx.Unity.Triggers;
+using UniRx.Unity.Diagnostics;
+using UnityEngine.Events;
+using UnityEngine.UI;
 using System.Net;
 using System.IO;
 #if !(UNITY_METRO || UNITY_WP8) && (UNITY_4_3 || UNITY_4_2 || UNITY_4_1 || UNITY_4_0_1 || UNITY_4_0 || UNITY_3_5 || UNITY_3_4 || UNITY_3_3 || UNITY_3_2 || UNITY_3_1 || UNITY_3_0_0 || UNITY_3_0 || UNITY_2_6_1 || UNITY_2_6)
@@ -21,7 +23,7 @@ using HashEntry = System.Collections.Generic.KeyValuePair<string, string>;
 using UniRx.InternalUtil;
 #endif
 
-namespace UniRx.ObjectTest
+namespace UniRx.Unity.ObjectTest
 {
     public enum Mikan
     {
@@ -259,8 +261,8 @@ namespace UniRx.ObjectTest
                 logtext.AppendLine(x.Message);
             });
 
-
             // Intxxx.Subscribe(x => Debug.Log(x));
+
             LongxXXX.Subscribe(x => Debug.Log(x));
             DuAAX.Subscribe(x => Debug.Log(x));
             FloAAX.Subscribe(x => Debug.Log(x));
@@ -336,6 +338,7 @@ namespace UniRx.ObjectTest
 
         Subject<Unit> throttleSubject = new Subject<Unit>();
         Func<bool> isNull = null;
+
         ReactiveProperty<int> fromNeverRxProp = null;
 
         public Func<bool> IsNull<T>(T source)
@@ -372,7 +375,6 @@ namespace UniRx.ObjectTest
 
             if (GUILayout.Button("RxProp2Push"))
             {
-                fromNeverRxProp.Value = 20;
             }
 
             if (GUILayout.Button("DelayFrameEmpty"))
@@ -386,7 +388,7 @@ namespace UniRx.ObjectTest
             if (GUILayout.Button("NextFrame"))
             {
                 logtext.AppendLine("StartFrame:" + Time.frameCount);
-                Observable.NextFrame()
+                ObservableMainThreadDispatcher.NextFrame()
                     .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + Time.frameCount))
                     .AddTo(disposables);
             }
@@ -394,7 +396,7 @@ namespace UniRx.ObjectTest
             if (GUILayout.Button("IntervalFrame"))
             {
                 logtext.AppendLine("StartFrame:" + Time.frameCount);
-                Observable.IntervalFrame(3)
+                ObservableMainThreadDispatcher.IntervalFrame(3)
                     .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + Time.frameCount))
                     .AddTo(disposables);
             }
@@ -402,7 +404,7 @@ namespace UniRx.ObjectTest
             if (GUILayout.Button("TimerFrame1"))
             {
                 logtext.AppendLine("StartFrame:" + Time.frameCount);
-                Observable.TimerFrame(3)
+                ObservableMainThreadDispatcher.TimerFrame(3)
                     .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + Time.frameCount))
                     .AddTo(disposables);
             }
@@ -410,7 +412,7 @@ namespace UniRx.ObjectTest
             if (GUILayout.Button("TimerFrame2"))
             {
                 logtext.AppendLine("StartFrame:" + Time.frameCount);
-                Observable.TimerFrame(5, 3)
+                ObservableMainThreadDispatcher.TimerFrame(5, 3)
                     .Subscribe(x => logtext.AppendLine(x.ToString() + ":" + Time.frameCount), () => logtext.AppendLine("completed" + Time.frameCount))
                     .AddTo(disposables);
             }
@@ -419,7 +421,7 @@ namespace UniRx.ObjectTest
             {
                 logtext.AppendLine("StartFrame:" + Time.frameCount);
                 Time.timeScale = 0f;
-                Scheduler.MainThreadIgnoreTimeScale.Schedule(TimeSpan.FromSeconds(3), () =>
+                SchedulerUnity.MainThreadIgnoreTimeScale.Schedule(TimeSpan.FromSeconds(3), () =>
                 {
                     logtext.AppendLine(Time.frameCount.ToString());
                 });
@@ -428,7 +430,7 @@ namespace UniRx.ObjectTest
             if (GUILayout.Button("SampleFrame"))
             {
                 logtext.AppendLine("SampleFrame:" + Time.frameCount);
-                Observable.IntervalFrame(10)
+                ObservableMainThreadDispatcher.IntervalFrame(10)
                     .SampleFrame(25)
                     .Take(6)
                     .Subscribe(x =>
@@ -528,7 +530,7 @@ namespace UniRx.ObjectTest
 
             if (GUILayout.Button("Cancel"))
             {
-                var dispose = Scheduler.MainThread.Schedule(TimeSpan.FromSeconds(3), () =>
+                var dispose = SchedulerUnity.MainThread.Schedule(TimeSpan.FromSeconds(3), () =>
                 {
                     Debug.Log("MainThreadSchedule");
                 });
