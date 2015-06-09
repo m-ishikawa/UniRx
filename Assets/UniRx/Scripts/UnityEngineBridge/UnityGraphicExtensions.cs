@@ -5,7 +5,11 @@ using System;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+#if UniRxLibrary
 namespace UniRx.Unity
+#else
+namespace UniRx
+#endif
 {
     public static partial class UnityGraphicExtensions
     {

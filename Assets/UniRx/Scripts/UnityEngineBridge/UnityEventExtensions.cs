@@ -6,7 +6,11 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine.Events;
 
+#if UniRxLibrary
 namespace UniRx.Unity
+#else
+namespace UniRx
+#endif
 {
     public static partial class UnityEventExtensions
     {

@@ -1,5 +1,4 @@
 ﻿using UniRx;
-using UniRx.Unity;
 using UnityEngine;
 
 namespace Assets.UniRx.Examples

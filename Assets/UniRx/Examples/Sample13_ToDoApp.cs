@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.EventSystems;
 
-namespace UniRx.Unity.Examples
+namespace UniRx.Examples
 {
     public class Sample13_ToDoApp : MonoBehaviour
     {

@@ -7,7 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
+#if UniRxLibrary
 namespace UniRx.Unity
+#else
+namespace UniRx
+#endif
 {
     public static class Thread
     {

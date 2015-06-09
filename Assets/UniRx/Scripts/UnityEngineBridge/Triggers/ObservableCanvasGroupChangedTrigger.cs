@@ -4,7 +4,11 @@
 using System;
 using UnityEngine;
 
+#if UniRxLibrary
 namespace UniRx.Unity.Triggers
+#else
+namespace UniRx.Triggers
+#endif
 {
     [DisallowMultipleComponent]
     public class ObservableCanvasGroupChangedTrigger : ObservableTriggerBase

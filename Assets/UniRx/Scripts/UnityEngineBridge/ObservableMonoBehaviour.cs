@@ -1,7 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
+#if UniRxLibrary
 namespace UniRx.Unity
+#else
+namespace UniRx
+#endif
 {
     // not yet obsolete
     // [Obsolete("ObservableMonoBehaviour is legacy component. use triggres instead")]

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace UniRx.Unity.ObjectTest
+namespace UniRx.ObjectTest
 {
     public class Clicker : MonoBehaviour
     {

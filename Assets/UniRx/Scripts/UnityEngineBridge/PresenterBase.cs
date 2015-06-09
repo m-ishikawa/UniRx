@@ -1,7 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
+#if UniRxLibrary
+namespace UniRx.Unity
+#else
 namespace UniRx
+#endif
 {
     // InEditor : Construct Children Dependency
     // Awake : Construct Parent Dependency

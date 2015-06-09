@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UniRxLibrary
 namespace UniRx.Unity
+#else
+namespace UniRx
+#endif
 {
     public interface IReadOnlyReactiveProperty<T> : IObservable<T>
     {

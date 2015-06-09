@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace UniRx.Unity.Examples
+namespace UniRx.Examples
 {
     public class Sample05_ConvertFromCoroutine
     {
@@ -10,7 +10,7 @@ namespace UniRx.Unity.Examples
         public static IObservable<string> GetWWW(string url)
         {
             // convert coroutine to IObservable
-            return ObservableMainThreadDispatcher.FromCoroutine<string>((observer, cancellationToken) => GetWWWCore(url, observer, cancellationToken));
+            return Observable.FromCoroutine<string>((observer, cancellationToken) => GetWWWCore(url, observer, cancellationToken));
         }
 
         // IEnumerator with callback

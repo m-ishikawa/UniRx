@@ -5,7 +5,11 @@ using System; // require keep for Windows Universal App
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+#if UniRxLibrary
 namespace UniRx.Unity.Triggers
+#else
+namespace UniRx.Triggers
+#endif
 {
     [DisallowMultipleComponent]
     public class ObservableEventTrigger : ObservableTriggerBase, IEventSystemHandler, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IBeginDragHandler, IInitializePotentialDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IScrollHandler, IUpdateSelectedHandler, ISelectHandler, IDeselectHandler, IMoveHandler, ISubmitHandler, ICancelHandler

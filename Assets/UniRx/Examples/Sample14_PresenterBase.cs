@@ -1,6 +1,5 @@
 ﻿using System;
 using UniRx;
-using UniRx.Unity;
 using UnityEngine;
 
 namespace Assets.UniRx.Examples
@@ -78,7 +77,7 @@ namespace Assets.UniRx.Examples
         public static IDisposable MarkAwakePhase(MonoBehaviour target)
         {
             Count++;
-            return ObservableMainThreadDispatcher.TimerFrame(AnimationSpeed * Count)
+            return Observable.TimerFrame(AnimationSpeed * Count)
                 .Subscribe(_ => target.GetComponent<Renderer>().material.color = Color.yellow);
 
         }
@@ -86,7 +85,7 @@ namespace Assets.UniRx.Examples
         public static IDisposable MarkCapturePhase(MonoBehaviour target)
         {
             Count++;
-            return ObservableMainThreadDispatcher.TimerFrame(AnimationSpeed * Count)
+            return Observable.TimerFrame(AnimationSpeed * Count)
                 .Subscribe(_ => target.GetComponent<Renderer>().material.color = Color.green);
 
         }
@@ -94,7 +93,7 @@ namespace Assets.UniRx.Examples
         public static IDisposable MarkBubblingPhase(MonoBehaviour target)
         {
             Count++;
-            return ObservableMainThreadDispatcher.TimerFrame(AnimationSpeed * Count)
+            return Observable.TimerFrame(AnimationSpeed * Count)
                 .Subscribe(_ => target.GetComponent<Renderer>().material.color = Color.red);
         }
 

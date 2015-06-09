@@ -6,7 +6,7 @@ using System.Text;
 using UniRx;
 using UnityEngine;
 
-namespace UniRx.Unity.ObjectTest
+namespace UniRx.ObjectTest
 {
     [ExecuteInEditMode]
     public class EditorBehaviourTest : MonoBehaviour
@@ -59,7 +59,7 @@ namespace UniRx.Unity.ObjectTest
         [UnityEditor.MenuItem("UniRxTest/RunEnumerator", false)]
         public static void RunEnumerator()
         {
-            runEnumerator = ObservableMainThreadDispatcher.FromCoroutine(Inf).Subscribe();
+            runEnumerator = Observable.FromCoroutine(Inf).Subscribe();
         }
 
         [UnityEditor.MenuItem("UniRxTest/StopEnumerator", false)]
@@ -84,7 +84,7 @@ namespace UniRx.Unity.ObjectTest
         public static void IsPlaying()
         {
             // huga huga hug 2
-            Debug.Log(UniRx.Unity.ScenePlaybackDetector.IsPlaying);
+            Debug.Log(ScenePlaybackDetector.IsPlaying);
         }
 
         static IEnumerator Hoge()

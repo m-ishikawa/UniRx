@@ -2,7 +2,13 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+#if UniRxLibrary
 namespace UniRx.Unity
+#else
+using ObservableUnity = UniRx.Observable;
+
+namespace UniRx
+#endif
 {
 #if !(UNITY_METRO || UNITY_WP8) && (UNITY_4_4 || UNITY_4_3 || UNITY_4_2 || UNITY_4_1 || UNITY_4_0_1 || UNITY_4_0 || UNITY_3_5 || UNITY_3_4 || UNITY_3_3 || UNITY_3_2 || UNITY_3_1 || UNITY_3_0_0 || UNITY_3_0 || UNITY_2_6_1 || UNITY_2_6)
     // Fallback for Unity versions below 4.5
@@ -20,101 +26,101 @@ namespace UniRx.Unity
     {
         public static IObservable<string> Get(string url, Hash headers = null, IProgress<float> progress = null)
         {
-            return ObservableMainThreadDispatcher.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, null, (headers ?? new Hash())), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, null, (headers ?? new Hash())), observer, progress, cancellation));
         }
 
         public static IObservable<byte[]> GetAndGetBytes(string url, Hash headers = null, IProgress<float> progress = null)
         {
-            return ObservableMainThreadDispatcher.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, null, (headers ?? new Hash())), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, null, (headers ?? new Hash())), observer, progress, cancellation));
         }
         public static IObservable<WWW> GetWWW(string url, Hash headers = null, IProgress<float> progress = null)
         {
-            return ObservableMainThreadDispatcher.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, null, (headers ?? new Hash())), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, null, (headers ?? new Hash())), observer, progress, cancellation));
         }
 
         public static IObservable<string> Post(string url, byte[] postData, IProgress<float> progress = null)
         {
-            return ObservableMainThreadDispatcher.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, postData), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, postData), observer, progress, cancellation));
         }
 
         public static IObservable<string> Post(string url, byte[] postData, Hash headers, IProgress<float> progress = null)
         {
-            return ObservableMainThreadDispatcher.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, postData, headers), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, postData, headers), observer, progress, cancellation));
         }
 
         public static IObservable<string> Post(string url, WWWForm content, IProgress<float> progress = null)
         {
-            return ObservableMainThreadDispatcher.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, content), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, content), observer, progress, cancellation));
         }
 
         public static IObservable<string> Post(string url, WWWForm content, Hash headers, IProgress<float> progress = null)
         {
             var contentHeaders = content.headers;
-            return ObservableMainThreadDispatcher.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, content.data, MergeHash(contentHeaders, headers)), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<string>((observer, cancellation) => FetchText(new WWW(url, content.data, MergeHash(contentHeaders, headers)), observer, progress, cancellation));
         }
 
         public static IObservable<byte[]> PostAndGetBytes(string url, byte[] postData, IProgress<float> progress = null)
         {
-            return ObservableMainThreadDispatcher.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, postData), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, postData), observer, progress, cancellation));
         }
 
         public static IObservable<byte[]> PostAndGetBytes(string url, byte[] postData, Hash headers, IProgress<float> progress = null)
         {
-            return ObservableMainThreadDispatcher.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, postData, headers), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, postData, headers), observer, progress, cancellation));
         }
 
         public static IObservable<byte[]> PostAndGetBytes(string url, WWWForm content, IProgress<float> progress = null)
         {
-            return ObservableMainThreadDispatcher.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, content), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, content), observer, progress, cancellation));
         }
 
         public static IObservable<byte[]> PostAndGetBytes(string url, WWWForm content, Hash headers, IProgress<float> progress = null)
         {
             var contentHeaders = content.headers;
-            return ObservableMainThreadDispatcher.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, content.data, MergeHash(contentHeaders, headers)), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<byte[]>((observer, cancellation) => FetchBytes(new WWW(url, content.data, MergeHash(contentHeaders, headers)), observer, progress, cancellation));
         }
 
         public static IObservable<WWW> PostWWW(string url, byte[] postData, IProgress<float> progress = null)
         {
-            return ObservableMainThreadDispatcher.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, postData), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, postData), observer, progress, cancellation));
         }
 
         public static IObservable<WWW> PostWWW(string url, byte[] postData, Hash headers, IProgress<float> progress = null)
         {
-            return ObservableMainThreadDispatcher.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, postData, headers), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, postData, headers), observer, progress, cancellation));
         }
 
         public static IObservable<WWW> PostWWW(string url, WWWForm content, IProgress<float> progress = null)
         {
-            return ObservableMainThreadDispatcher.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, content), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, content), observer, progress, cancellation));
         }
 
         public static IObservable<WWW> PostWWW(string url, WWWForm content, Hash headers, IProgress<float> progress = null)
         {
             var contentHeaders = content.headers;
-            return ObservableMainThreadDispatcher.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, content.data, MergeHash(contentHeaders, headers)), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<WWW>((observer, cancellation) => Fetch(new WWW(url, content.data, MergeHash(contentHeaders, headers)), observer, progress, cancellation));
         }
 
         public static IObservable<AssetBundle> LoadFromCacheOrDownload(string url, int version, IProgress<float> progress = null)
         {
-            return ObservableMainThreadDispatcher.FromCoroutine<AssetBundle>((observer, cancellation) => FetchAssetBundle(WWW.LoadFromCacheOrDownload(url, version), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<AssetBundle>((observer, cancellation) => FetchAssetBundle(WWW.LoadFromCacheOrDownload(url, version), observer, progress, cancellation));
         }
 
         public static IObservable<AssetBundle> LoadFromCacheOrDownload(string url, int version, uint crc, IProgress<float> progress = null)
         {
-            return ObservableMainThreadDispatcher.FromCoroutine<AssetBundle>((observer, cancellation) => FetchAssetBundle(WWW.LoadFromCacheOrDownload(url, version, crc), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<AssetBundle>((observer, cancellation) => FetchAssetBundle(WWW.LoadFromCacheOrDownload(url, version, crc), observer, progress, cancellation));
         }
 
         // over Unity5 supports Hash128
 #if !(UNITY_4_6 || UNITY_4_5 || UNITY_4_4 || UNITY_4_3 || UNITY_4_2 || UNITY_4_1 || UNITY_4_0_1 || UNITY_4_0 || UNITY_3_5 || UNITY_3_4 || UNITY_3_3 || UNITY_3_2 || UNITY_3_1 || UNITY_3_0_0 || UNITY_3_0 || UNITY_2_6_1 || UNITY_2_6)
         public static IObservable<AssetBundle> LoadFromCacheOrDownload(string url, Hash128 hash128, IProgress<float> progress = null)
         {
-            return ObservableMainThreadDispatcher.FromCoroutine<AssetBundle>((observer, cancellation) => FetchAssetBundle(WWW.LoadFromCacheOrDownload(url, hash128), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<AssetBundle>((observer, cancellation) => FetchAssetBundle(WWW.LoadFromCacheOrDownload(url, hash128), observer, progress, cancellation));
         }
 
         public static IObservable<AssetBundle> LoadFromCacheOrDownload(string url, Hash128 hash128, uint crc, IProgress<float> progress = null)
         {
-            return ObservableMainThreadDispatcher.FromCoroutine<AssetBundle>((observer, cancellation) => FetchAssetBundle(WWW.LoadFromCacheOrDownload(url, hash128, crc), observer, progress, cancellation));
+            return ObservableUnity.FromCoroutine<AssetBundle>((observer, cancellation) => FetchAssetBundle(WWW.LoadFromCacheOrDownload(url, hash128, crc), observer, progress, cancellation));
         }
 #endif
 

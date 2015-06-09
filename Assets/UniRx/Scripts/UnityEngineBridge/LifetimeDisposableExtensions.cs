@@ -1,9 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using UniRx.Unity.Triggers;
 using UnityEngine;
 
+#if UniRxLibrary
+using UniRx.Unity.Triggers;
+
 namespace UniRx.Unity
+#else
+using UniRx.Triggers;
+
+namespace UniRx
+#endif
 {
     public static partial class DisposableExtensions
     {

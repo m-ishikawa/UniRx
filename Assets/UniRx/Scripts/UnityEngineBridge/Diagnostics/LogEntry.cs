@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
+#if UniRxLibrary
 namespace UniRx.Unity.Diagnostics
+#else
+namespace UniRx.Diagnostics
+#endif
 {
     public class LogEntry
     {

@@ -2,9 +2,9 @@
 
 using UnityEngine;
 using UniRx;
-using UniRx.Unity.Triggers; // for enable gameObject.EventAsObservbale()
+using UniRx.Triggers; // for enable gameObject.EventAsObservbale()
 
-namespace UniRx.Unity.Examples
+namespace UniRx.Examples
 {
     public class Sample03_GameObjectAsObservable : MonoBehaviour
     {
